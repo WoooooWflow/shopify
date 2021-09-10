@@ -7,9 +7,9 @@
     "colors_outline_button_labels": "#121212",
     "colors_background_1": "#FFFFFF",
     "colors_background_2": "#F3F3F3",
-    "type_header_font": "assistant_n4",
-    "type_body_font": "assistant_n4",
-    "predictive_search_show_vendor": true,
+    "type_header_font": "abril_fatface_n4",
+    "type_body_font": "abril_fatface_n4",
+    "accent_icons": "outline-button",
     "sections": {
       "announcement-bar": {
         "type": "announcement-bar",
@@ -77,7 +77,7 @@
 
     ],
     "blocks": {
-      "1631150657b6b8ed8a": {
+      "16313014509ce71ea4": {
         "type": "shopify:\/\/apps\/growave\/blocks\/block.embed.socialshopwave-helper\/b3d2efbe-110a-4e27-84a8-1f2ed63996a4",
         "disabled": false,
         "settings": {
