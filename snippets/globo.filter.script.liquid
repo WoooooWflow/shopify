@@ -1,0 +1,101 @@
+{%- assign globo_search = true -%}
+{%- assign home_filter = false -%}
+{%- assign has_form = false -%}
+{%- if request.page_type != 'index' -%}{%- assign home_filter = false -%}{%- endif -%}
+{%- if globo_search or request.page_type == 'collection' or request.page_type == 'search' or home_filter -%}
+{%- assign assets_url = 'product-1.png' | asset_img_url: '50x' | split: 'product-1_50x.png' -%}
+{%- assign files_url  = 'product-1.png' | file_img_url: '50x' | split: 'product-1_50x.png' -%}
+{%- assign primary_locale = 'null' -%}
+{%- for locale in shop.published_locales -%}{%- if locale.primary -%}{%- assign primary_locale = locale.iso_code | json -%}{%- endif -%}{%- endfor -%}
+
+<script>
+  window.sortByRelevance = false;
+  window.moneyFormat = "{{ shop.money_format | replace: '"', "'" }}";
+  window.GloboMoneyFormat = "{{ shop.money_format | replace: '"', "'" }}";
+  window.GloboMoneyWithCurrencyFormat = "{{ shop.money_with_currency_format | replace: '"', "'" }}";
+  window.filterPriceRate = 1;
+  window.filterPriceAdjustment = 1;
+
+  window.shopCurrency = {{shop.currency | json}};
+  window.currentCurrency = {{cart.currency.iso_code | json}};
+
+  window.isMultiCurrency = {% assign enabled_currencies_size = shop.enabled_currencies | size %}{% if enabled_currencies_size > 1 and true %}true{% else %}false{% endif %};
+  window.assetsUrl = '{{ assets_url[0] }}';
+  window.filesUrl = '{{ files_url[0] }}';
+  var page_id = {% if request.page_type contains 'collection' %}{% if collection.id %}{{collection.id | default: 1}}{% else %}1{% endif %}{% elsif request.page_type contains 'search' %}2{% else %}0{% endif %};
+  var GloboFilterConfig = {
+    api: {
+      filterUrl: "https://filter-eu.globosoftware.net/filter",
+      searchUrl: "https://filter-eu.globosoftware.net/search",
+      url: "https://filter-eu.globosoftware.net",
+    },
+    shop: {
+      name: "{{ shop.name | escape }}",
+      url: "{{ shop.url }}",
+      domain: "{{ shop.permanent_domain }}",
+      is_multicurrency: {% assign is_multicurrency = shop.enabled_currencies | size %}{% if is_multicurrency > 1 and false and false %}true{% else %}false{% endif %},
+      currency: {{shop.currency | json}},
+      cur_currency: {{cart.currency.iso_code | json}},
+      cur_locale: {{request.locale.iso_code | json}},
+      locale: {{primary_locale}},
+      product_image: {width: 360, height: 504},
+      no_image_url: "https://cdn.shopify.com/s/images/themes/product-1.png",
+      themeStoreId: 887,
+      swatches: {{ shop.metafields.globo.swatches | json }},
+      translation: {"default":{"search":{"suggestions":"Suggestions","collections":"Collections","pages":"Pages","product":"Product","products":"Products","view_all":"Search for","view_all_products":"View all products","not_found":"Sorry, nothing found for","product_not_found":"No products were found","no_result_keywords_suggestions_title":"Popular searches","no_result_products_suggestions_title":"However, You may like","zero_character_keywords_suggestions_title":"Suggestions","zero_character_popular_searches_title":"Popular searches","zero_character_products_suggestions_title":"Trending products"},"form":{"title":"Search Products","submit":"Search"},"filter":{"filter_by":"Filter By","clear_all":"Clear All","view":"View","clear":"Clear","in_stock":"In Stock","out_of_stock":"Out of Stock","ready_to_ship":"Ready to ship","search":"Search options"},"sort":{"sort_by":"Sort By","manually":"Featured","availability_in_stock_first":"Availability","relevance":"Relevance","best_selling":"Best Selling","alphabetically_a_z":"Alphabetically, A-Z","alphabetically_z_a":"Alphabetically, Z-A","price_low_to_high":"Price, low to high","price_high_to_low":"Price, high to low","date_new_to_old":"Date, new to old","date_old_to_new":"Date, old to new","sale_off":"% Sale off"},"product":{"add_to_cart":"Add to cart","unavailable":"Unavailable","sold_out":"Sold out","sale":"Sale","load_more":"Load more","limit":"Show","search":"Search products","no_results":"Sorry, there are no products in this collection"},"labels":{"420439":"Collection","420440":"Vendor","420441":"Product Type","420442":"Price","420443":"Percent Sale","420444":"Availability","420445":"Tag","420446":"Ready To Ship","420447":"Color","420448":"Size","420449":"Collection","420450":"Vendor","420451":"Product Type","420452":"Price","420453":"Percent Sale","420454":"Availability","420455":"Tag","420456":"Ready To Ship","420457":"Color","420458":"Size"}},"ru":{"search":{"suggestions":"\u041f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f","collections":"\u041a\u043e\u043b\u043b\u0435\u043a\u0446\u0438\u0438","pages":"\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u044b","product":"\u041f\u0440\u043e\u0434\u0443\u043a\u0442","products":"\u041f\u0440\u043e\u0434\u0443\u043a\u0442\u044b","view_all":"\u0418\u0449\u0438","view_all_products":"\u041f\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0432\u0441\u0435 \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u044b","not_found":"\u041f\u0443\u0441\u0442\u043e\u0435 \u043f\u043e\u0438\u0441\u043a\u043e\u0432\u043e\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435","product_not_found":"\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u043e \u0442\u043e\u043c, \u0447\u0442\u043e \u043f\u0440\u043e\u0434\u0443\u043a\u0442 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d","no_result_keywords_suggestions_title":"\u041d\u0435\u0442 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u043e\u0432 \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0439 \u043a\u043b\u044e\u0447\u0435\u0432\u044b\u0445 \u0441\u043b\u043e\u0432 \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a","no_result_products_suggestions_title":"\u0417\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u0432 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d","zero_character_keywords_suggestions_title":"\u041f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f","zero_character_popular_searches_title":"\u041f\u043e\u043f\u0443\u043b\u044f\u0440\u043d\u044b\u0435 \u0437\u0430\u043f\u0440\u043e\u0441\u044b","zero_character_products_suggestions_title":"\u0417\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0439 \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u043e\u0432 \u0441 \u043d\u0443\u043b\u0435\u0432\u044b\u043c \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u043c"},"form":{"title":"\u0418\u0441\u043a\u0430\u0442\u044c \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u044b","submit":"\u041f\u043e\u0438\u0441\u043a"},"filter":{"filter_by":"\u0424\u0438\u043b\u044c\u0442\u0440\u043e\u0432\u0430\u0442\u044c \u043f\u043e","clear_all":"\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u044c \u0432\u0441\u0435","view":"\u0412\u0438\u0434","clear":"\u041f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u044b\u0439","in_stock":"\u0412 \u043d\u0430\u043b\u0438\u0447\u0438\u0438","out_of_stock":"\u0420\u0430\u0441\u043f\u0440\u043e\u0434\u0430\u043d\u043e","ready_to_ship":"\u0413\u043e\u0442\u043e\u0432 \u043a \u043e\u0442\u043f\u0440\u0430\u0432\u043a\u0435","search":"\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b \u043f\u043e\u0438\u0441\u043a\u0430"},"sort":{"sort_by":"\u0421\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043f\u043e","manually":"\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u043c\u044b\u0435","availability_in_stock_first":"\u0414\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u044c","relevance":"\u0410\u043a\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c","best_selling":"\u041b\u0443\u0447\u0448\u0438\u0435 \u043f\u0440\u043e\u0434\u0430\u0436\u0438","alphabetically_a_z":"\u041f\u043e \u0430\u043b\u0444\u0430\u0432\u0438\u0442\u0443, AZ","alphabetically_z_a":"\u041f\u043e \u0430\u043b\u0444\u0430\u0432\u0438\u0442\u0443 ZA","price_low_to_high":"\u0426\u0435\u043d\u0430, \u043f\u043e \u0432\u043e\u0437\u0440\u0430\u0441\u0442\u0430\u043d\u0438\u044e","price_high_to_low":"\u0426\u0435\u043d\u0430, \u043f\u043e \u0443\u0431\u044b\u0432\u0430\u043d\u0438\u044e","date_new_to_old":"\u0414\u0430\u0442\u0430, \u043e\u0442 \u043d\u043e\u0432\u043e\u0433\u043e \u043a \u0441\u0442\u0430\u0440\u043e\u043c\u0443","date_old_to_new":"\u0414\u0430\u0442\u0430, \u043e\u0442 \u0441\u0442\u0430\u0440\u043e\u0433\u043e \u043a \u043d\u043e\u0432\u043e\u043c\u0443","sale_off":"% \u0420\u0430\u0441\u043f\u0440\u043e\u0434\u0430\u0436\u0430"},"product":{"add_to_cart":"Add to cart","unavailable":"Unavailable","sold_out":"Sold out","sale":"Sale","load_more":"Load more","limit":"Show","search":"Search products","no_results":"Sorry, there are no products in this collection"},"labels":{"420439":"Collection","420440":"Vendor","420441":"Product Type","420442":"Price","420443":"Percent Sale","420444":"Availability","420445":"Tag","420446":"Ready To Ship","420447":"Color","420448":"Size","420449":"Collection","420450":"Vendor","420451":"Product Type","420452":"Price","420453":"Percent Sale","420454":"Availability","420455":"Tag","420456":"Ready To Ship","420457":"Color","420458":"Size"}}},
+      redirects: {{ shop.metafields.globo.redirects | json }},
+      images: [],
+      settings: {{ settings | json }},
+      home_filter: {{home_filter}},
+      page: {{request.page_type | json}},
+      layout: "app"
+    },
+    special_countries: null,
+    adjustments: null,
+
+    year_make_model: {
+      id: null
+    },
+    filter: {
+      id: {"default":39736}[page_id] || {"default":39736}['default'] || 0,
+      layout: 1,
+      showCount: 1,
+      isLoadMore: 0,
+      filter_on_search_page: true
+    },
+    search:{
+      enable: {{globo_search}},
+      zero_character_suggestion: false,
+      layout: 1,
+    },
+    collection: {
+      id: {%- if request.page_type == 'collection' -%}{{ collection.id | default: 0 }}{%- else -%}0{%- endif -%},
+      handle: {%- if request.page_type == 'collection' -%}'{{ collection.handle }}'{%- else -%}''{%- endif -%},
+      sort: {% if request.page_type contains 'collection' %}"{{ collection.default_sort_by | default: 'best-selling' }}"{% elsif request.page_type contains 'search' %}'relevance'{% else %}'best-selling'{% endif %},
+      tags: {% if current_tags %}[{% for tag in current_tags %}{{ tag | json }},{{ tag | handle | json }}{% unless forloop.last %},{% endunless %}{% endfor %}]{% else %}null{% endif %},
+      vendor: {{ collection.current_vendor | json }},
+      type: {{ collection.current_type | json }},
+      term: {{ search.terms | escape | json }},
+      limit: 12,
+      products_count: {{collection.products_count | default: 0}},
+      excludeTags: null
+    },
+    customer: {% if customer %}{id: {{customer.id}}, tags: {{customer.tags | json}}}{% else %}false{% endif %},
+    selector: {
+      sortBy: '.collection-sorting',
+      pagination: '.pagination:first, .paginate:first, .pagination-custom:first, #pagination:first, #gf_pagination_wrap',
+      products: '.grid.grid-collage'
+    }
+  };
+
+</script>
+<script defer src="{{ 'v5.globo.filter.lib.js' | asset_url }}"></script>
+{% if request.page_type == 'collection' or request.page_type == 'search' or home_filter or has_form %}<link rel="preload stylesheet" href="{{ 'v5.globo.filter.css' | asset_url }}" as="style">
+{% endif %}
+{% if globo_search %}<link rel="preload stylesheet" href="{{ 'v5.globo.search.css' | asset_url }}" as="style">
+{% endif %}
+{% endif %}
+
+
+
+
